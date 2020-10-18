@@ -1,0 +1,29 @@
+{
+    "name":"Charitable",
+    "description": "Calculate a NPO's ratio of charitable expenditure to their overall income.",
+    "version": "1.0",
+    "manifest_version":2,
+    "icons":{"128": "images/non-profit-512.png"},
+    "browser_action":{
+        "defualt_icon":"images/non-profit-512.png",
+        "default_popup": "popup.html",
+        "default_title": "Charitable"
+    },
+    "content_scripts": [
+        {
+            "matches":[
+                "<all_urls>"
+            ],
+            "js":[
+                "jquery.js",
+                "popup.js"
+            ]
+        }
+    ],
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "permissions": ["tabs", "http://www.propublica.org/*"]
+}
+
+
