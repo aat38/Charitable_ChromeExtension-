@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charitable</title>
+    <script src="jquery.js"></script>
+    <script src="popup.js"></script>
+    <style>
+        .thar-one {
+            color: #6f732f;
+            cursor: pointer;
+            display: block;
+            position: relative;
+            border: 2px solid #6f732f;
+            background-color: transparent;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+        }
+
+        .thar-one:hover {
+            color: white !important;
+            background-color: transparent;
+            text-shadow: none;
+        }
+
+        .thar-one:hover:before {
+            bottom: 0%;
+            top: auto;
+            height: 100%;
+        }
+
+        .thar-one:before {
+            display: block;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            height: 0px;
+            width: 100%;
+            z-index: -1;
+            content: '';
+            color: #000 !important;
+            background: #6f732f;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+        }
+
+        .thar-two {
+            color: #99aa38;
+            cursor: pointer;
+            display: block;
+            position: relative;
+            border: 2px solid #99aa38;
+            background-color: transparent;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+        }
+
+        .thar-two:hover {
+            color: white !important;
+            background-color: transparent;
+            text-shadow: ntwo;
+        }
+
+        .thar-two:hover:before {
+            top: 0%;
+            bottom: auto;
+            height: 100%;
+        }
+
+        .thar-two:before {
+            display: block;
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            height: 0px;
+            width: 100%;
+            z-index: -1;
+            content: '';
+            color: white !important;
+            background: #99aa38;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+        }
+
+        .thar-three {
+            color: #F7CA18;
+            cursor: pointer;
+            display: block;
+            position: relative;
+            border: 2px solid #F7CA18;
+            background-color: transparent;
+            transition: all 0.4s cubic-bezier(0.42, 0, 0.58, 1);
+        }
+
+        .thar-three:hover {
+            color: white !important;
+            background-color: transparent;
+            text-shadow: nthree;
+        }
+
+        .thar-three:hover:before {
+            left: 0%;
+            right: auto;
+            width: 100%;
+        }
+
+        .thar-three:before {
+            display: block;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 100%;
+            width: 0px;
+            z-index: -1;
+            content: '';
+            color: #000 !important;
+            background: #F7CA18;
+            transition: all 0.4s cubic-bezier(0.42, 0, 0.58, 1);
+        }
+
+        /* ///////////////////////////////////// */
+
+        button {
+            padding: 7px;
+            width: 200px;
+            margin-top: 7px;
+        }
+
+        html,
+        body {
+            width: 400px;
+            height: 375px;
+        }
+
+        #orgName {
+            margin-left: 80px;
+            color: #14591D;
+            max-width: 318px;
+        }
+
+        #orgHeader {
+            margin-left: -5px;
+            width: 410px;
+            border-top: 2px solid #14591D;
+            border-bottom: 2px solid #14591D;
+            min-height: 65px;
+        }
+
+        #responseBody {
+            margin-left: 80px;
+        }
+
+
+        .buttons {
+            margin-left: 125px;
+        }
+
+        header {
+            display: block;
+            position: relative;
+            margin: 40px 0;
+        }
+
+        a:link,
+        a:visited,
+        a:active {
+            color: white;
+            text-decoration: none
+        }
+
+        .header {
+            -webkit-transform: rotate(-90deg);
+            -moz-transform: rotate(-90deg);
+            -ms-transform: rotate(-90deg);
+            -o-transform: rotate(-90deg);
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+            left: -325px;
+            top: 100px;
+            position: absolute;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+            background-color: #99AA38;
+            padding-left: 55%;
+            padding-right: 90%;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            margin-left: -20px;
+            visibility: hidden;
+            width: 300px;
+            background-color: #E2C044;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0px;
+            position: absolute;
+            z-index: 1;
+            top: 150%;
+            margin-top: -10px;
+            left: 4%
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            border-width: 5px;
+            border-style: solid;
+            left: 15%;
+            border-color: transparent transparent #E2C044 transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        #logo-icon {
+            position: fixed;
+            width: 2.2rem;
+            z-index: 1;
+            margin-left: 16px;
+            margin-top: 20px;
+        }
+
+        .tooltip {
+            margin-top: 5px;
+        }
+
+        table td:first-child {
+            width: 250px;
+            min-width: 250px;
+            max-width: 250px;
+        }
+
+        /* table td:nth-child(2) {
+            float: inherit;
+        } */
+
+        #search {
+            font-size: 25px;
+            font-weight: bold;
+            color: #99AA38;
+            margin-left: 150px;
+            padding-top: 150px;
+        }
+
+        #sorry,
+        #onlyPDF,
+        #directions {
+            font-size: 20px;
+            font-weight: bold;
+            color: #99AA38;
+            margin-left: 100px;
+            padding-top: 80px;
+        }
+    </style>
+
+</html>
+</style>
+</head>
+
+<body>
+    <img src="images/non-profit-512.png" alt="Charitable" id="logo-icon">
+    <a style="position: absolute;
+    margin-top: 340px;
+    margin-left: 8px;
+    color: white;z-index: 3;" id="dirButton">Directions</a>
+    <a style="position: absolute;
+    margin-top: 360px;
+    margin-left: 12px;
+    color: white;z-index: 3;" id="tipButton">990 Tips</a>
+    <div class="header">
+        <h1 class="logo">
+            Charitable
+        </h1>
+    </div>
+    <div id="search">
+        Searching...
+    </div>
+    <!-- Main -->
+    <div id="main" style="display:none">
+        <div id="orgHeader">
+            <h2 id="orgName"></h2>
+        </div>
+        <div id="response" style="display: none;"></div>
+        <div id="responseBody">
+            <div id="otherOrgName" style="display: none;"></div>
+            <div id="otherEIN" style="display: none;"></div>
+
+            <table>
+                <tr class="tooltip">
+                    <td>
+                        <b>Program service expenses/Total expenses:</b>
+                        <span class="tooltiptext">What percentage of the charity’s spending is on actual charity? A
+                            healthy
+                            charity
+                            will spend
+                            atleast 75% on their cause.</span>
+                    </td>
+                    <td id="programServicesPERCENT">
+                    </td>
+                </tr>
+
+                <tr class="tooltip">
+                    <td>
+                        <b>Management and general expenses/Total expenses:</b>
+                        <span class="tooltiptext">What percentage of the charity’s spending is on administrative
+                            costs?</span>
+                    </td>
+                    <td id="mgmtAndGenPERCENT">
+                    </td>
+                </tr>
+                <tr class="tooltip">
+                    <td>
+                        <b>Fundraising expenses/Total expenses:</b>
+                        <span class="tooltiptext">What percentage of the charity’s spending is on fundraising?</span>
+                    </td>
+                    <td id="fundraisingPERCENT">
+                    </td>
+                </tr>
+                <tr class="tooltip">
+                    <td><b>Net income margin (Total Revenue – Total Expenses)/(Total Revenue):</b>
+                        <span class="tooltiptext">How much of the charity’s annual revenue is being retained by the NPO?
+                            While
+                            for-profit
+                            companies would like this ratio to be as high as possible, a charity should be spending
+                            their
+                            revenue on their cause and thus their net income should be near or below 0%. </span></td>
+                    <td id="netIncomeMarginPERCENT"></td>
+                </tr>
+                <tr class="tooltip">
+                    <td><b>Cash Buffer/Total expenses:</b>
+                        <span class="tooltiptext">How large is the cash buffer relative to total expenses? While a
+                            charity
+                            should have a cash
+                            buffer to guard against potential fluctuations in donations, an excessive amount of spare
+                            cash
+                            is
+                            somewhat of a red flag. It could mean that the charity has run out of charitable things to
+                            spend
+                            it
+                            on, meaning your future donations to the charity might sit idly doing nothing</span></td>
+                    <td id="cashPERCENT"></td>
+                </tr>
+
+            </table>
+        </div>
+
+        <div class="buttons">
+            <a class="pdf" href="" target="_blank"><button class="thar-one">Most recent Form 990 pdf</button></a>
+            <a class="xml" href="" target="_blank"><button class="thar-two">Most recent Form 990 xml</button></a>
+            <button class="thar-three" id="tryAgain">Not the right charity?</button>
+        </div>
+
+    </div>
+    <!-- end main^ -->
+    </div>
+    <div id="sorry" style="display: none;">
+        We are sorry but there is no standardized 990 tax information to be found for this search.
+    </div>
+    <div id="onlyPDF" style="display: none;max-width: 250px;text-align:center;">
+        We are sorry but only PDF information is available for this charity.
+        <a class="pdf" href="" target="_blank"><button class="thar-three"
+                style="margin-left: 25px; margin-top: 20px;">Most recent Form 990 pdf</button></a>
+    </div>
+    <div id="directions" style="display: none;">
+        <table>
+            <tr>
+                <td> 1. Navigate to a charity's home page before clicking on the <b>Charitable extension</b>.</td>
+            </tr>
+            <tr>
+                <td> 2. Voila! You now have the charity's financial specs at your fingertips.</td>
+            </tr>
+        </table>
+    </div>
+    <div id="tips" style="display: none;">
+        <table>
+            <tr>
+                <td><a href="https://roadmapconsulting.org/wp-content/uploads/2016/03/how_to_read_form_990.pdf"
+                        target="_blank"><button class="thar-two" style="margin-left: 130px; margin-top: 100px;">How to
+                            Interpret the 990</button></a>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="https://www.charitynavigator.org/index.cfm?bay=content.view&cpid=847"
+                        target="_blank"><button class="thar-three" style="margin-left: 130px; margin-top: 50px;">Examining
+                            a Charity's Financial Health</button></a></td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+
+</html>
