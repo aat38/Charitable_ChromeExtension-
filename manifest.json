@@ -1,7 +1,7 @@
 {
     "name":"Charitable",
-    "description": "Calculate a NPO's ratio of charitable expenditure to their overall income.",
-    "version": "1.0",
+    "description": "Determine if a NPO's tax information is consistent with its proclaimed charitable commitment.",
+    "version": "1.2",
     "manifest_version":2,
     "icons":{"128": "images/non-profit-512.png"},
     "browser_action":{
@@ -20,10 +20,6 @@
             ]
         }
     ],
-    "background": {
-        "scripts": ["background.js"]
-    },
     "permissions": ["tabs", "http://www.propublica.org/*"]
 }
-
 

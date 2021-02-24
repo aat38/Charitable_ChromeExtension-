@@ -18,6 +18,7 @@ function firstquery(title, url) {
     document.getElementById("search").style.display = "block"
     console.log(url)
     var resps = []
+    // parsing title for later query 
     title = title.replace("Donate to ", "")
     title = title.replace("Donate ", "")
     title = title.replace("Official Site", "")
@@ -51,12 +52,9 @@ function firstquery(title, url) {
             // remove any information after a dash. is almost always irrelevant and will mess up search
             val[i] = val[i].split("-")[0]
         }
-
         else if (val[i].includes(" — ") && title.includes("|")) {
-            // remove any information after a dash. is almost always irrelevant and will mess up search
             val[i] = val[i].split("—")[0]
         }
-
         if (val[i].includes(",")) {
             // remove any information after a comma. 
             val[i] = val[i].split(",")[0]
@@ -70,105 +68,111 @@ function firstquery(title, url) {
             val[i] = val[i].split(".")[0]
         }
         if (val[i].includes("&")) {
+            // url-encode the 'and' symbol
             val[i] = val[i].replace("&", "%26")
         }
 
-        //create the url-encoding of a search string
-        phrase = val[i].replaceAll(" ", "%20")
-        bookend = "%22"
-        searchString = bookend.concat(phrase)
-        searchString = searchString.concat(bookend)
-        console.log(searchString)
-        $.ajax({
-            url: "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchString,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-            },
-            success: function (res) {
-                console.log("success")
-                if (val.length == 3) {
-                    document.getElementById("search").style.display = "none"
-                    document.getElementById("main").style.display = "none"
-                    document.getElementById("sorry").style.display = "block"
-                    i=10
-                    return
-                }
-            },
-            error: function (res) {
-                console.log("error")
-                errorCount = errorCount + 1
-                if (errorCount == 2 || val.length == 1 || val.length == 3) {
-                    document.getElementById("search").style.display = "none"
-                    document.getElementById("main").style.display = "none"
-                    document.getElementById("sorry").style.display = "block"
-                    i=10
-                    return
-                }
-                val.length=1
-            }
-        }).then(resp => {
-            resps.push(resp)
-            //.....................................
-            //....val format requires different....
-            //..........query operations...........
-            //.....................................
-            //if two vals
-            //if two vals arent 0 in length
-            //if val[0]<val[1]
-            //else
-            //else if val[0]!=0 in length
-            //else if val[1]!=0 in length
-            //if one val
-            //.....................................
+        // if val length isn't two, something is wrong with the way the document.title is formatted and
+        // the following code won't work. else, run query since it has the possibility to return a result 
+        if (val.length == 3) {
+            document.getElementById("search").style.display = "none"
+            document.getElementById("main").style.display = "none"
+            document.getElementById("sorry").style.display = "block"
+        } else {
+            //create the url-encoding of a search string
+            phrase = val[i].replaceAll(" ", "%20")
+            bookend = "%22"
+            searchString = bookend.concat(phrase)
+            searchString = searchString.concat(bookend)
+            console.log(searchString)
+            // use this searchString to query ProPublica's API for related search results 
+            $.ajax({
+                url: "https://projects.propublica.org/nonprofits/api/v2/search.json?q=" + searchString,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+                success: function (res) {
+                    console.log("success")
 
-            if (resps.length === 2 && errorCount<=0) { //if two vals
-                document.getElementById("response").innerHTML = JSON.stringify(resps)
-                x = JSON.parse(document.getElementById("response").innerHTML)
-                if (x[0].total_results > 0 && x[1].total_results > 0) {
-                    console.log("x[0].total_results=" + x[0].total_results + " x[1].total_results=" + x[1].total_results)
-                    if (x[0].total_results < x[1].total_results) {
-                        //log and update html
+                },
+                error: function (res) {
+                    console.log("error with search Strings")
+                    errorCount = errorCount + 1
+                    if (errorCount == 2 || val.length == 1 || val.length == 3) {
+                        document.getElementById("search").style.display = "none"
+                        document.getElementById("main").style.display = "none"
+                        document.getElementById("sorry").style.display = "block"
+                        i = 10
+                        return
+                    }
+                }
+            }).then(resp => {
+                resps.push(resp)
+                //.....................................
+                //....val format requires different....
+                //..........query operations...........
+                //.....................................
+                //if two vals
+                //if two vals arent 0 in length
+                //if val[0]<val[1]
+                //else
+                //else if val[0]!=0 in length
+                //else if val[1]!=0 in length
+                //if one val
+                //.....................................
+
+                if (resps.length === 1 && errorCount <= 1) { //if one val
+                    document.getElementById("response").innerHTML = JSON.stringify(resps)
+                    x = JSON.parse(document.getElementById("response").innerHTML)
+                    if (x[0].total_results > 0) {
+                        console.log(x[0].organizations[0].name)
+                        document.getElementById('orgName').innerHTML = x[0].organizations[0].name + ", " + x[0].organizations[0].state
+                        findEin(x[0])
+                    }
+                }
+
+                if (resps.length === 2 && errorCount <= 0) { //if two vals
+                    document.getElementById("response").innerHTML = JSON.stringify(resps)
+                    x = JSON.parse(document.getElementById("response").innerHTML)
+                    if (x[0].total_results > 0 && x[1].total_results > 0) {
+                        console.log("x[0].total_results=" + x[0].total_results + " x[1].total_results=" + x[1].total_results)
+                        if (x[0].total_results < x[1].total_results) {
+                            //log and update html
+                            console.log(x[0].organizations[0].name)
+                            document.getElementById('orgName').innerHTML = x[0].organizations[0].name + ", " + x[0].organizations[0].state
+                            document.getElementById('otherOrgName').innerHTML = JSON.stringify(x[1])
+                            console.log(x[1])
+                            // retrieve EIN of search result with highest revenue
+                            findEin(x[0])
+                        } else {
+                            console.log(x[1].organizations[0].name)
+                            document.getElementById('orgName').innerHTML = x[1].organizations[0].name + ", " + x[1].organizations[0].state
+                            document.getElementById('otherOrgName').innerHTML = JSON.stringify(x[0])
+                            console.log(x[0])
+                            findEin(x[1])
+                        }
+
+                    }
+                    else if (x[0].total_results > 0) {
                         console.log(x[0].organizations[0].name)
                         document.getElementById('orgName').innerHTML = x[0].organizations[0].name + ", " + x[0].organizations[0].state
                         document.getElementById('otherOrgName').innerHTML = JSON.stringify(x[1])
-                        console.log(x[1])
-                        // retrieve EIN of search result with highest revenue
                         findEin(x[0])
-                    } else {
+                    }
+                    else {
                         console.log(x[1].organizations[0].name)
                         document.getElementById('orgName').innerHTML = x[1].organizations[0].name + ", " + x[1].organizations[0].state
                         document.getElementById('otherOrgName').innerHTML = JSON.stringify(x[0])
-                        console.log(x[0])
                         findEin(x[1])
                     }
+                }
 
-                }
-                else if (x[0].total_results > 0) {
-                    console.log(x[0].organizations[0].name)
-                    document.getElementById('orgName').innerHTML = x[0].organizations[0].name + ", " + x[0].organizations[0].state
-                    document.getElementById('otherOrgName').innerHTML = JSON.stringify(x[1])
-                    findEin(x[0])
-                }
-                else {
-                    console.log(x[1].organizations[0].name)
-                    document.getElementById('orgName').innerHTML = x[1].organizations[0].name + ", " + x[1].organizations[0].state
-                    document.getElementById('otherOrgName').innerHTML = JSON.stringify(x[0])
-                    findEin(x[1])
-                }
-            }
-
-            if (val.length === 1 && errorCount<=1) { 
-                document.getElementById("response").innerHTML = JSON.stringify(resps)
-                x = JSON.parse(document.getElementById("response").innerHTML)
-                if (x[0].total_results > 0) {
-                    console.log(x[0].organizations[0].name)
-                    document.getElementById('orgName').innerHTML = x[0].organizations[0].name + ", " + x[0].organizations[0].state
-                    findEin(x[0])
-                }
-            }
-
-        })
+            })
+        }
     }
+
+
+
 }
 
 
@@ -243,7 +247,13 @@ function irsQuery(ein) {
                 document.getElementById('orgName').innerHTML = orgName + ", " + orgLocation.split(/[0-9]/g)[0]
                 if (dom.getElementsByClassName("single-filing cf").length > 1 && dom.getElementsByClassName("action xml").length > 0) {
                     // xmlLink = dom.getElementsByClassName("single-filing cf")[1].children[0].lastElementChild.href
-                    xmlLink = dom.getElementsByClassName("action xml")[0].href
+                    if (dom.getElementsByClassName("action xml")[0].childElementCount >= 3){
+                        option=dom.getElementsByClassName("action xml")[0].options[1]
+                        xmlLink=option.dataset.href
+                    }
+                    else{
+                        xmlLink = dom.getElementsByClassName("action xml")[0].href
+                    }
                     RAWpdfLink = dom.getElementsByClassName("action fulltext")[0].href
                     pdfLink = "https://projects.propublica.org/nonprofits".concat(RAWpdfLink.split("/nonprofits")[1])
                     console.log("retrieved link to most recent Form990.xml = " + xmlLink)
